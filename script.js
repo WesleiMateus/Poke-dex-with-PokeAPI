@@ -13,6 +13,12 @@ document.addEventListener("DOMContentLoaded", () => {
         loadingOverlay.style.opacity = 0;
     };
 
+
+    function getTypeColors(type) {
+        return getComputedStyle(document.documentElement).getPropertyValue(`--type-color-${type}`).trim() || "grey";
+    }
+
+
     async function getPokeDetails(url) {
         try {
 
@@ -31,12 +37,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const pokeDetails = await response.json();
 
+
+            const types = await Promise.all(pokeDetails.types.map( async (type) => {
+
+                const typeRes = await fetch(type.type.url)
+                if (!typeRes) { console.log("ERRO na requisição do tipo", type.type.url); return}
+
+                const responseType = await typeRes.json();
+
+                return {
+                    name: responseType.name,
+                    color: getTypeColors(type.type.name)
+                }
+            }))
+
+
             return {
                 id,
-                ...pokeDetails
+                ...pokeDetails,
+                types
             };
-    
-            // console.log("TYPE POKE", pokeDetails.types[id].type.name)
 
         } catch (err) {
             console.log(err.message)
@@ -56,8 +76,6 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!response.ok) throw new Error(`HTTP Error: ${response.status}`)
 
             const dataResponse = await response.json();
-    
-            // console.log( "FETCH TODOS POKÉMONS", dataResponse);
 
             getPokeDetails(dataResponse.results[0].url)
 
