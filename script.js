@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
     const loadingOverlay = document.getElementById("loadingOverlay");
     const pokemonGrid = document.getElementById("pokemonGrid");
+    const inputPokemon = document.getElementById("searchPokemon");
+    const cleanSearch = document.getElementById("cleanSearch")
 
     //Se as func nao funcionarem, analisa essa parte aqui e muda pra classList.add() com o optionalChaining "?."
 
@@ -145,6 +147,45 @@ document.addEventListener("DOMContentLoaded", () => {
             
         }
     }
+
+    inputPokemon.addEventListener("input", (e) => { 
+        const searchValue = e.target.value.toLowerCase().trim();
+
+        if (searchValue !== "") {
+            cleanSearch.style.display = "flex";
+            const filteredPokemons = allPokemons.filter((pokemon) => {
+               if (!pokemon) return false;
+               return pokemon.name.toLowerCase().includes(searchValue)
+            })
+
+            pokemonGrid.innerHTML = "";
+            if (filteredPokemons.length == 0) {
+
+                const notFoundPokemon = document.createElement("div");
+                notFoundPokemon.className = "card-not-found"
+
+                notFoundPokemon.innerHTML = `
+                    <span>Pokémon ${searchValue} não encontrado!</span>
+                `;
+
+                pokemonGrid.appendChild(notFoundPokemon)
+
+
+            } else {
+                renderPokemonsGrid(filteredPokemons)
+            }
+        }
+        else {
+            cleanSearch.style.display = "none";
+            renderPokemonsGrid(allPokemons);
+        }
+    })
+
+    cleanSearch.addEventListener("click", () => {
+        inputPokemon.value = "";
+        cleanSearch.style.display = "none";
+        renderPokemonsGrid(allPokemons)
+    })
 
     getPokeInfos()
 })
