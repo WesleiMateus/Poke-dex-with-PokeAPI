@@ -87,18 +87,37 @@ document.addEventListener("DOMContentLoaded", () => {
         const title = document.createElement("h3");
         title.textContent = pokemon.name;
 
+        const typeDiv = document.createElement("div");
+        typeDiv.className = "pokemon-types";
+
+        typeDiv.innerHTML = pokemon.types.map(type => 
+            `
+                <span>${type.name}</span>
+            `
+        ).join("");
+
+        console.log(pokemon.types)
+
+        
         pokemonGrid.appendChild(pokemonCard);
         pokemonCard.appendChild(img);
         pokemonCard.appendChild(title);
+        pokemonCard.appendChild(typeDiv);
+
+        return pokemonCard;
 
     }
 
     function renderPokemonsGrid(pokemons) {
         pokemonGrid.innerHTML = "";
+        const fragment = document.createDocumentFragment();
 
         for ( const pokemon of pokemons ) {
             const card = createPokemonCard(pokemon);
+            fragment.appendChild(card);
         } 
+
+        pokemonGrid.appendChild(fragment) 
     }
 
     async function getPokeInfos() {
