@@ -211,3 +211,18 @@ header .content {
     margin-bottom: .5rem;
     color: var(--text-color);
 }
+
+/* ESTILIZANDO OS BADGES DOS TIPOS */
+
+.pokemon-types {
+    display: flex;
+    justify-content: center;
+    gap: .4rem;
+}
+
+.type-badge {
+    padding: .1rem .8rem;
+    border-radius: 1rem;
+    color: white;
+    font-weight: 500;
+}

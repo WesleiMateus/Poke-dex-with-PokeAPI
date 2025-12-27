@@ -92,20 +92,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
         typeDiv.innerHTML = pokemon.types.map(type => 
             `
-                <span>${type.name}</span>
+                <span class="type-badge" style="background-color: ${type.color}">${type.name}</span>
             `
         ).join("");
 
-        console.log(pokemon.types)
-
-        
         pokemonGrid.appendChild(pokemonCard);
         pokemonCard.appendChild(img);
         pokemonCard.appendChild(title);
         pokemonCard.appendChild(typeDiv);
 
         return pokemonCard;
-
     }
 
     function renderPokemonsGrid(pokemons) {
