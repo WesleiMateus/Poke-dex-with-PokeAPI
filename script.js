@@ -1,23 +1,24 @@
-const loadingOverlay = document.getElementById("loadingOverlay");
-
 document.addEventListener("DOMContentLoaded", () => {
-
+    const loadingOverlay = document.getElementById("loadingOverlay");
+    const pokemonGrid = document.getElementById("pokemonGrid");
 
     //Se as func nao funcionarem, analisa essa parte aqui e muda pra classList.add() com o optionalChaining "?."
 
+    let allPokemons = [];
+
     function showLoading() {
         loadingOverlay.style.opacity = 1;
+
     };
     
     function hideLoading() {
+        loadingOverlay.style.zIndex = -99999;
         loadingOverlay.style.opacity = 0;
     };
-
 
     function getTypeColors(type) {
         return getComputedStyle(document.documentElement).getPropertyValue(`--type-color-${type}`).trim() || "grey";
     }
-
 
     async function getPokeDetails(url) {
         try {
@@ -36,7 +37,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             const pokeDetails = await response.json();
-
 
             const types = await Promise.all(pokeDetails.types.map( async (type) => {
 
@@ -59,11 +59,46 @@ document.addEventListener("DOMContentLoaded", () => {
             };
 
         } catch (err) {
-            console.log(err.message)
+            console.log("ERRO: Erro ao buscar detalhes do pokémon", err)
+            return null
 
         } finally {
             //nada ainda
         }
+    }
+
+    function setPokeImg (sprites) {
+        const svgFrontDefault = sprites.sprites.other.dream_world?.front_default;
+        const pngFrontDefault = sprites.sprites.front_default;
+
+        return svgFrontDefault || pngFrontDefault;
+    }
+
+    function createPokemonCard(pokemon) {
+        const pokemonCard = document.createElement("div");
+        pokemonCard.className = "poke-card";
+        pokemonCard.dataset.id = pokemon.id;
+
+        const img = document.createElement("img");
+        img.loading = "lazy";
+        img.alt = pokemon.name;
+        img.src = setPokeImg(pokemon);
+
+        const title = document.createElement("h3");
+        title.textContent = pokemon.name;
+
+        pokemonGrid.appendChild(pokemonCard);
+        pokemonCard.appendChild(img);
+        pokemonCard.appendChild(title);
+
+    }
+
+    function renderPokemonsGrid(pokemons) {
+        pokemonGrid.innerHTML = "";
+
+        for ( const pokemon of pokemons ) {
+            const card = createPokemonCard(pokemon);
+        } 
     }
 
     async function getPokeInfos() {
@@ -77,15 +112,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const dataResponse = await response.json();
 
+            const pokeInfos = await Promise.all(dataResponse.results.map( async (pokemon) => {
+                const details = await getPokeDetails(pokemon.url);
+                return details; 
+            }))
+            
+            allPokemons = pokeInfos.filter(Boolean);
+
+            renderPokemonsGrid(allPokemons)
+
             getPokeDetails(dataResponse.results[0].url)
 
         } catch (err) {
-            console.log(err.message)
+            console.log("Erro ao buscar pokémon", err)
         } finally {
             hideLoading();
+            
         }
     }
 
     getPokeInfos()
 })
-
