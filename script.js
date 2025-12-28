@@ -2,8 +2,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const loadingOverlay = document.getElementById("loadingOverlay");
     const pokemonGrid = document.getElementById("pokemonGrid");
     const inputPokemon = document.getElementById("searchPokemon");
-    const cleanSearch = document.getElementById("cleanSearch")
-
+    const cleanSearch = document.getElementById("cleanSearch");
+    const closeModal = document.getElementById("closeModal");
+    const modal = document.getElementById("modal")
+    const body = document.querySelector("body")
+    
     //Se as func nao funcionarem, analisa essa parte aqui e muda pra classList.add() com o optionalChaining "?."
 
     let allPokemons = [];
@@ -102,6 +105,16 @@ document.addEventListener("DOMContentLoaded", () => {
         pokemonCard.appendChild(img);
         pokemonCard.appendChild(title);
         pokemonCard.appendChild(typeDiv);
+
+        closeModal.addEventListener("click", () => {
+            body.classList.remove("modalOpened")
+            modal.style.display = "none";
+        })
+
+        pokemonCard.addEventListener('click', () => {
+            body.classList.add("modalOpened")
+            modal.style.display = "flex";
+        })
 
         return pokemonCard;
     }
