@@ -4,8 +4,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const inputPokemon = document.getElementById("searchPokemon");
     const cleanSearch = document.getElementById("cleanSearch");
     const closeModal = document.getElementById("closeModal");
-    const modal = document.getElementById("modal")
-    const body = document.querySelector("body")
+    const modal = document.getElementById("modal");
+    const body = document.querySelector("body");
+    const modalBody = document.querySelector(".modal-body");
     
     //Se as func nao funcionarem, analisa essa parte aqui e muda pra classList.add() com o optionalChaining "?."
 
@@ -55,7 +56,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     color: getTypeColors(type.type.name)
                 }
             }))
-
 
             return {
                 id,
@@ -114,6 +114,17 @@ document.addEventListener("DOMContentLoaded", () => {
         pokemonCard.addEventListener('click', () => {
             body.classList.add("modalOpened")
             modal.style.display = "flex";
+
+            modalBody.innerHTML = `
+                <div class="img-name">
+                    <img src="${setPokeImg(pokemon)}" alt="${pokemon.name}" />
+                    <h3>${pokemon.name}</h3>
+                </div>
+                <div>
+
+                </div>
+
+            `;
         })
 
         return pokemonCard;
@@ -150,7 +161,8 @@ document.addEventListener("DOMContentLoaded", () => {
             allPokemons = pokeInfos.filter(Boolean);
 
             renderPokemonsGrid(allPokemons)
-
+            console.log(allPokemons[0].abilities[0].ability.url)
+            
             getPokeDetails(dataResponse.results[0].url)
 
         } catch (err) {
