@@ -252,26 +252,22 @@ header .content {
 
     animation: fadeIn 0.3s ease;
 }
-
-body.modalOpened {
-    overflow: hidden;
-}
-
 .modal .modal-content {
     position: relative;
-    height: 500px;
-    min-width: 400px;;
+    max-height: 700px;
+    min-width: 350px;
+    max-width: 450px;
 
     background-color: var(--dropdown-hover);
     box-shadow: 0 4px 6px var(--input-shadow);
-    backdrop-filter: blur(3px);
+    backdrop-filter: blur(30px);
 
     border-radius: 1rem;
     padding: 1rem;
 }
 
 .modal-content span {
-    position: relative;
+    position: absolute;
 
     display: flex;
     justify-content: flex-end;
@@ -281,8 +277,44 @@ body.modalOpened {
     cursor: pointer;
 }
 
-.moda-body {
+.modal-body {
+    margin-top: 1rem;
+}
 
+.modal-body img {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    margin: 0 auto;
+    display: block;
+}
+
+.modal-body h3 {
+    text-align: center;
+    font-size: 1.5rem;
+    text-transform: capitalize;
+    margin: 1rem 0;
+}
+
+.pokemon-details {
+    display: grid;
+    grid-template-columns: repeat(2, 2fr);
+    gap: 1rem;
+    margin-top: 1rem;
+    animation: fadeIn .5s ease-out;
+}
+
+.detail-items {
+    background: rgba(76, 175, 79, 0.308);
+    padding: .5rem;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.detail-items strong {
+    display: block;
+    color: var(--primary-color);
+    margin-bottom: .3rem;
 }
 
 /* ANIMACOES */

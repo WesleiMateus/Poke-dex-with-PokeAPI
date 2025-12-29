@@ -57,10 +57,23 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }))
 
+            // console.log(pokeDetails.abilities)
+
+            const abilities = await Promise.all(pokeDetails.abilities.map(async (ability) => {
+
+                const abilitiesRes = await fetch(ability.ability.url);
+                if (!abilitiesRes) { console.log("ERRO na requisição do tipo", ability.ability.url); return}
+
+                const responseAbility = await abilitiesRes.json()
+
+                return responseAbility.name;
+            }))
+
             return {
                 id,
                 ...pokeDetails,
-                types
+                types,
+                abilities,
             };
 
         } catch (err) {
@@ -77,6 +90,48 @@ document.addEventListener("DOMContentLoaded", () => {
         const pngFrontDefault = sprites.sprites.front_default;
 
         return svgFrontDefault || pngFrontDefault;
+    }
+
+    function showPokemonDetails(pokemon) {
+        modalBody.innerHTML = `
+        <img src="${setPokeImg(pokemon)}" alt="${pokemon.name}" />
+        <h3>${pokemon.name}</h3>
+            <div class="pokemon-details">
+                <div class="detail-items">
+                    <strong>Height</strong>
+                    ${(pokemon.height / 10).toFixed(1)} m
+                </div>
+                <div class="detail-items">
+                    <strong>Weight</strong>
+                    ${(pokemon.weight).toFixed(1)} kg
+                </div>
+                <div class="detail-items">
+                    <strong>Types</strong>
+                    ${pokemon.types.map(type => type.name).join(", ")}
+                </div>
+                <div class="detail-items">
+                    <strong>Abilities</strong>
+                    ${pokemon.abilities.join(", ")}
+                </div>
+                <div class="detail-items">
+                    <strong>HP</strong>
+                    ${pokemon.stats[0].base_stat}
+                </div>
+                <div class="detail-items">
+                    <strong>Atack</strong>
+                    ${pokemon.stats[1].base_stat}
+                </div>
+                <div class="detail-items">
+                    <strong>Defense</strong>
+                    ${pokemon.stats[3].base_stat}
+                </div>
+                <div class="detail-items">
+                    <strong>Speed</strong>
+                    ${pokemon.stats[5].base_stat} km/h
+                </div>
+            </div>
+
+        `;
     }
 
     function createPokemonCard(pokemon) {
@@ -107,25 +162,13 @@ document.addEventListener("DOMContentLoaded", () => {
         pokemonCard.appendChild(typeDiv);
 
         closeModal.addEventListener("click", () => {
-            body.classList.remove("modalOpened")
-            modal.style.display = "none";
-        })
-
-        pokemonCard.addEventListener('click', () => {
-            body.classList.add("modalOpened")
-            modal.style.display = "flex";
-
-            modalBody.innerHTML = `
-                <div class="img-name">
-                    <img src="${setPokeImg(pokemon)}" alt="${pokemon.name}" />
-                    <h3>${pokemon.name}</h3>
-                </div>
-                <div>
-
-                </div>
-
-            `;
-        })
+                modal.style.display = "none";
+            })
+    
+            pokemonCard.addEventListener('click', () => {
+                modal.style.display = "flex";
+                showPokemonDetails(pokemon)
+            })
 
         return pokemonCard;
     }
@@ -161,7 +204,6 @@ document.addEventListener("DOMContentLoaded", () => {
             allPokemons = pokeInfos.filter(Boolean);
 
             renderPokemonsGrid(allPokemons)
-            console.log(allPokemons[0].abilities[0].ability.url)
             
             getPokeDetails(dataResponse.results[0].url)
 
