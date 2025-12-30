@@ -7,8 +7,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const modal = document.getElementById("modal");
     const body = document.querySelector("body");
     const modalBody = document.querySelector(".modal-body");
-    
-    //Se as func nao funcionarem, analisa essa parte aqui e muda pra classList.add() com o optionalChaining "?."
+
+    const themeToggle = document.getElementById("themeToggle");
+    const preferenceDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
 
     let allPokemons = [];
 
@@ -56,8 +57,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     color: getTypeColors(type.type.name)
                 }
             }))
-
-            // console.log(pokeDetails.abilities)
 
             const abilities = await Promise.all(pokeDetails.abilities.map(async (ability) => {
 
@@ -252,6 +251,17 @@ document.addEventListener("DOMContentLoaded", () => {
         inputPokemon.value = "";
         cleanSearch.style.display = "none";
         renderPokemonsGrid(allPokemons)
+    })
+
+    document.documentElement.setAttribute("data-theme", localStorage.getItem("theme") ||  (preferenceDarkScheme.matches ? "dark" : "light"))
+
+    themeToggle.addEventListener("click", () => {
+        const currentTheme = document.documentElement.getAttribute("data-theme");
+        const newTheme = currentTheme === "light" ? "dark" : "light";
+        
+        document.documentElement.setAttribute("data-theme", newTheme);
+
+        localStorage.setItem("theme", newTheme);
     })
 
     getPokeInfos()
